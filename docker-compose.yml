@@ -1,0 +1,21 @@
+version: '3.3'
+services:
+  portainer-ce:
+    container_name: local-portainer
+    restart: always
+    command: --tlsskipverify
+    volumes:
+    - '/var/run/docker.sock:/var/run/docker.sock'
+    - '/portainer_data:/data'
+    image: 'portainer/portainer-ce:latest'
+    labels:
+    - "traefik.enable=true"
+    - "traefik.http.routers.local-portainer.rule=Host(`local-portainer.localtest.me`)"
+    - "traefik.http.services.local-portainer.loadbalancer.server.port=9000"
+    - "traefik.http.routers.local-portainer.entrypoints=websecure"
+    - "traefik.http.routers.local-portainer.tls=true"
+    networks:
+    - traefik-public
+networks:
+  traefik-public:
+    external: true     
